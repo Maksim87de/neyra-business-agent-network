@@ -24,7 +24,42 @@ REQUIRED = (
     'agents/finance/runtime/SOUL.md',
     'agents/finance/runtime/AGENTS.md',
     'agents/finance/skills/financial-triage/SKILL.md',
+    'runtime/overrides/neyra_cli/model_catalog.py',
+    'runtime/overrides/neyra_cli/model_catalog.json',
 )
+
+
+def _validate_local_model_catalog(errors: list[str]) -> None:
+    catalog_path = ROOT / "runtime/overrides/neyra_cli/model_catalog.json"
+    module_path = ROOT / "runtime/overrides/neyra_cli/model_catalog.py"
+    try:
+        catalog = json.loads(catalog_path.read_text())
+    except (OSError, json.JSONDecodeEror) as exc:
+        errors.append(f"invalid local model catalog: {exc}")
+        return
+    providers = catalog.get("providers") if isinstance(catalog, dict) else None
+    if catalog.get("version") != 1 or not isinstance(providers, dict):
+        errors.append("local model catalog has an invalid schema")
+    for provider in ("openrouter", "nous"):
+        models = providers.get(provider, {}).get("models") if isinstance(providers, dict) else None
+        if not isinstance(models, list) or not models:
+            errors.append(f"local model catalog has no {provider} models")
+    module_text = module_path.read_text()
+    if "urllib.request" in module_text or "urlopen" in module_text:
+        errors.append("local model catalog contains runtime network fetching")
+
+    forbidden = ("raw" + ".githubusercontent.com", "neyra" + "-agent-2")
+    for path in ROOT.rglob("*"):
+        if not path.is_file() or ".git" in path.parts or "__pycache__" in path.parts:
+            continue
+        try:
+            text = path.read_text(errors="ignore")
+        except OSError:
+            continue
+        for forbidden_marker in forbidden:
+            if forbidden_marker in text:
+                errors.append(f"forbidden upstream reference in {path.relative_to(ROOT)}")
+                break
 
 
 def main() -> int:
@@ -37,6 +72,7 @@ def main() -> int:
             json.loads((ROOT / rel).read_text())
         except (OSError, json.JSONDecodeError) as exc:
             errors.append(f'invalid JSON {rel}: {exc}')
+    _validate_local_model_catalog(errors)
     for agent in ('legal', 'finance'):
         runtime = ROOT / 'agents' / agent / 'runtime'
         if not (runtime / 'SOUL.md').is_file() or not (runtime / 'AGENTS.md').is_file():

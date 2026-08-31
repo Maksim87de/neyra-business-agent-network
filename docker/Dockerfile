@@ -11,6 +11,7 @@ COPY runtime/overrides/neyra_cli/ /opt/neyra/neyra_cli/
 COPY runtime/overrides/tools/ /opt/neyra/tools/
 COPY runtime/overrides/model_tools.py /opt/neyra/model_tools.py
 COPY runtime/overrides/toolsets.py /opt/neyra/toolsets.py
+COPY runtime/overrides/docs/server-admin-mode.md /opt/neyra/docs/deployment/server-admin-mode.md
 COPY runtime/client-edition/cli.py /opt/neyra/neyra_cli/client_edition.py
 
 LABEL org.opencontainers.image.title="Neyra Business Agent Network" \

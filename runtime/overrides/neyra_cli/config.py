@@ -309,7 +309,7 @@ def recommended_update_command_for_method(method: str) -> str:
     if method == "homebrew":
         return "brew upgrade neyra-agent"
     if method == "docker":
-        return "docker pull ghcr.io/ceremoneymeister-bit/neyra-agent-2:latest"
+        return "docker pull ghcr.io/maksim87de/neyra-business-agent-network:latest"
     if method == "pip":
         import shutil
         uv = shutil.which("uv")
@@ -350,13 +350,13 @@ Neyra работает как container image, а не как git checkout: вн
 нет рабочей копии, в которую можно сделать pull. Обновляй образ и затем
 перезапускай контейнер:
 
-  docker pull ghcr.io/ceremoneymeister-bit/neyra-agent-2:latest
+  docker pull ghcr.io/maksim87de/neyra-business-agent-network:latest
   # затем перезапусти то, что запускало контейнер, например:
   docker compose up -d --force-recreate neyra
   # или для ad-hoc запуска выйди из текущего контейнера и снова выполни docker run
 
 Проверь новую версию после рестарта:
-  docker run --rm ghcr.io/ceremoneymeister-bit/neyra-agent-2:latest --version
+  docker run --rm ghcr.io/maksim87de/neyra-business-agent-network:latest --version
 
 Примечания:
   • Если закреплён конкретный tag (например, ``:v0.14.0``), ``:latest`` не
@@ -1763,27 +1763,6 @@ DEFAULT_CONFIG = {
             "enabled": True,         # Flip to false to silence the periodic line
             "interval_seconds": 300, # Default: every 5 minutes
         },
-    },
-
-    # Remotely-hosted model catalog manifest.  When enabled, the CLI fetches
-    # curated model lists for OpenRouter and Nous Portal from this URL,
-    # falling back to the in-repo snapshot on network failure.  Lets us
-    # update model picker lists without shipping a Neyra release.
-    # TODO: provide a stable Neyra catalog mirror if GitHub raw is not desired.
-    "model_catalog": {
-        "enabled": True,
-        "url": "https://raw.githubusercontent.com/ceremoneymeister-bit/neyra-agent-2/main/website/static/api/model-catalog.json",
-        # Disk cache TTL in hours.  Beyond this, the CLI refetches on the
-        # next /model or `neyra model` invocation; network failures
-        # silently fall back to the stale cache.
-        "ttl_hours": 24,
-        # Optional per-provider override URLs for third parties that want
-        # to self-host their own curation list using the same schema.
-        # Example:
-        #   providers:
-        #     openrouter:
-        #       url: https://example.com/my-curation.json
-        "providers": {},
     },
 
     # Network settings — workarounds for connectivity issues.

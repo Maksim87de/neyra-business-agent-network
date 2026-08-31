@@ -21,7 +21,7 @@ export function SidebarFooter({ status }: SidebarFooterProps) {
       </Typography>
 
       <a
-        href="https://github.com/ceremoneymeister-bit/neyra-agent-2"
+        href="https://github.com/Maksim87de/neyra-business-agent-network"
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
