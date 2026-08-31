@@ -13,5 +13,5 @@ fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
 [[ -n "$OUTPUT_IMAGE" ]] || fail 'Usage: build-image.sh <base-image@sha256:...> <candidate-image:tag>'
 
 docker image inspect "$BASE_IMAGE" >/dev/null 2>&1 || fail 'Pinned base image is not available locally.'
-docker build --file "$ROOT/docker/Dockerfile" --build-arg "BASE_IMAGE=$BASE_IMAGE" --tag "$OUTPUT_IMAGE" "$ROOT"
+docker build --pull=false --file "$ROOT/docker/Dockerfile" --build-arg "BASE_IMAGE=$BASE_IMAGE" --tag "$OUTPUT_IMAGE" "$ROOT"
 docker image inspect "$OUTPUT_IMAGE" --format 'PASS: candidate image id={{.Id}}'
