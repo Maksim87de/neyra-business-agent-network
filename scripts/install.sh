@@ -8,15 +8,18 @@ HOME_DIR="${NEYRA_HOME_DIR:-/opt/neyra-client/home}"
 DEPLOY_ENV="$CONFIG_DIR/deploy.env"
 START=1
 PULL=1
+CLIENT_ID=""
 
 usage() {
   cat <<'EOF'
-Usage: sudo ./scripts/install.sh [--prepare-only] [--skip-pull]
+Usage: sudo ./scripts/install.sh [--client-id company-slug] [--prepare-only] [--skip-pull]
 
-Run from an approved private deployment checkout. This script creates protected
-host directories and starts only an approved image configured in deploy.env.
-It never downloads source with a personal access token and never writes secrets
-to Git.
+Run from an approved deployment checkout. This script creates protected host
+directories and starts only the approved image configured in deploy.env. It
+never writes secrets to Git.
+
+--client-id supplies the local client identifier during the first install. It
+must contain only lowercase Latin letters, digits and hyphens.
 
 --skip-pull is only for an isolated staging host where the exact approved image
 is already present locally. A client release must normally pull its immutable
@@ -50,6 +53,11 @@ wait_for_healthy() {
 
 while (($#)); do
   case "$1" in
+    --client-id)
+      shift
+      [[ $# -gt 0 ]] || fail '--client-id requires a value.'
+      CLIENT_ID="$1"
+      ;;
     --prepare-only) START=0 ;;
     --skip-pull) PULL=0 ;;
     -h|--help) usage; exit 0 ;;
@@ -57,6 +65,10 @@ while (($#)); do
   esac
   shift
 done
+
+if [[ -n "$CLIENT_ID" && ! "$CLIENT_ID" =~ ^[a-z0-9][a-z0-9-]{1,62}$ ]]; then
+  fail 'CLIENT_ID must be 2–63 lowercase Latin letters, digits or hyphens and cannot start with a hyphen.'
+fi
 
 if [[ ${EUID} -ne 0 && ( "$CONFIG_DIR" == /etc/* || "$HOME_DIR" == /opt/* ) ]]; then
   fail 'Run with sudo for the standard /etc and /opt client paths.'
@@ -117,8 +129,22 @@ else
   info "Created persistent home with isolated legal and finance runtime packages. Set CLIENT_ID, provider, model and auth mode in $HOME_DIR/.env."
 fi
 
+if [[ -n "$CLIENT_ID" ]] && grep -q '^CLIENT_ID=REPLACE_WITH_CLIENT_SLUG$' "$HOME_DIR/.env"; then
+  python3 - "$HOME_DIR/.env" "$CLIENT_ID" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+text = path.read_text()
+needle = 'CLIENT_ID=REPLACE_WITH_CLIENT_SLUG\n'
+if needle not in text:
+    raise SystemExit('client .env has no expected CLIENT_ID placeholder')
+path.write_text(text.replace(needle, f'CLIENT_ID={sys.argv[2]}\n', 1))
+PY
+fi
+
 if grep -q '^CLIENT_ID=REPLACE_WITH_CLIENT_SLUG$' "$HOME_DIR/.env"; then
-  fail "Set CLIENT_ID in $HOME_DIR/.env; the file remains local with mode 0600."
+  fail "Set CLIENT_ID in $HOME_DIR/.env or rerun with --client-id; the file remains local with mode 0600."
 fi
 
 export NEYRA_HOME="$HOME_DIR"
