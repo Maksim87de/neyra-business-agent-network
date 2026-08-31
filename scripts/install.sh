@@ -165,7 +165,21 @@ if (( START == 0 )); then
 fi
 
 if (( PULL == 1 )); then
-  docker compose -f "$DEPLOY_DIR/docker-compose.yml" pull
+  if [[ -n "${NEYRA_CLIENT_IMAGE_TAR_URL:-}" ]]; then
+    if ! docker image inspect "$NEYRA_CLIENT_IMAGE" >/dev/null 2>&1; then
+      command -v curl >/dev/null || fail 'curl is required to download the public test image.'
+      command -v gzip >/dev/null || fail 'gzip is required to unpack the public test image.'
+      image_tar="$(mktemp)"
+      trap 'rm -f "$image_tar"' EXIT
+      info 'Downloading the public test image.'
+      curl --fail --location --retry 3 --output "$image_tar" "$NEYRA_CLIENT_IMAGE_TAR_URL"
+      gzip --test "$image_tar"
+      gzip --decompress --stdout "$image_tar" | docker load
+      docker image inspect "$NEYRA_CLIENT_IMAGE" >/dev/null 2>&1 || fail 'Downloaded image does not contain the expected Neyra tag.'
+    fi
+  else
+    docker compose -f "$DEPLOY_DIR/docker-compose.yml" pull
+  fi
 else
   docker image inspect "$NEYRA_CLIENT_IMAGE" >/dev/null 2>&1 || fail "--skip-pull requires NEYRA_CLIENT_IMAGE to exist locally."
   info 'Using a preloaded staging image; registry pull was skipped.'
