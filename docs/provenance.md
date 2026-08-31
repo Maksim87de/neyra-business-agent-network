@@ -15,6 +15,8 @@ The snapshot was imported on `2026-08-31T02:08:59Z` from approved operator-acces
 
 - `runtime/SOURCE-MANIFEST.sha256` and `frontend/SOURCE-MANIFEST.sha256` pin the imported file content.
 - The source roots were not Git worktrees and did not include a license or notice file at inspection time.
+- The imported dashboard package declares `name: web`, `version: 0.0.0`, `private: true` and no repository, author or license metadata; imported source headers also contain no copyright or license notice.
+- The deployed base image exposed no identifying OCI labels during inspection.
 - A filename/content scan found no target client identifiers and no matches for the baseline patterns for private keys, GitHub tokens, AWS keys or Telegram bot tokens.
 
 ## Distribution rule
