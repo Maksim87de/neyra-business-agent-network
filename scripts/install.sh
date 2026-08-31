@@ -131,6 +131,9 @@ else
   docker image inspect "$NEYRA_CLIENT_IMAGE" >/dev/null 2>&1 || fail "--skip-pull requires NEYRA_CLIENT_IMAGE to exist locally."
   info 'Using a preloaded staging image; registry pull was skipped.'
 fi
+# The runtime process runs as the configured unprivileged UID and must be able
+# to read its local environment and write its own client home.
+chown -R "$NEYRA_UID:$NEYRA_GID" "$HOME_DIR"
 docker compose -f "$DEPLOY_DIR/docker-compose.yml" up -d --remove-orphans
 wait_for_healthy
 "$ROOT/scripts/doctor.sh" --quick
