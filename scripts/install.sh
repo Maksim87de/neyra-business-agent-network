@@ -27,6 +27,27 @@ EOF
 fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
 info() { printf 'INFO: %s\n' "$*"; }
 
+wait_for_healthy() {
+  local cid status deadline
+  cid="$(docker compose -f "$DEPLOY_DIR/docker-compose.yml" ps -q neyra)"
+  [[ -n "$cid" ]] || fail 'Neyra container was not created.'
+  deadline=$((SECONDS + 90))
+  while (( SECONDS < deadline )); do
+    status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$cid")"
+    case "$status" in
+      healthy)
+        info 'Neyra container healthcheck is healthy.'
+        return 0
+        ;;
+      exited|dead)
+        fail "Neyra container stopped before becoming healthy (state: $status)."
+        ;;
+    esac
+    sleep 2
+  done
+  fail "Timed out waiting for Neyra container healthcheck (last state: $status)."
+}
+
 while (($#)); do
   case "$1" in
     --prepare-only) START=0 ;;
@@ -111,5 +132,6 @@ else
   info 'Using a preloaded staging image; registry pull was skipped.'
 fi
 docker compose -f "$DEPLOY_DIR/docker-compose.yml" up -d --remove-orphans
+wait_for_healthy
 "$ROOT/scripts/doctor.sh" --quick
 info 'Container started. Complete approved Neyra onboarding on this server before inviting end users.'
