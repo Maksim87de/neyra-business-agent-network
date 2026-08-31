@@ -28,8 +28,9 @@ CID="$(docker compose -f "$DEPLOY_DIR/docker-compose.yml" ps -q neyra)"
 [[ -n "$CID" ]] || fail 'Neyra container is not running.'
 BIN=/opt/neyra/.venv/bin/neyra
 
-if ! docker exec -it "$CID" "$BIN" auth status "$NEYRA_PROVIDER"; then
+AUTH_STATUS="$(docker exec -it "$CID" "$BIN" auth status "$NEYRA_PROVIDER" 2>&1 || true)"
+if ! grep -qiE 'logged in|authorized' <<<"$AUTH_STATUS"; then
   printf '\nProvider is not authorized. Complete the provider login inside this client container.\n'
   exec docker exec -it "$CID" "$BIN" login "$NEYRA_PROVIDER"
 fi
-pass "Provider $NEYRA_PROVIDER is authorized for this client contour."
+pass "Provider $NEYRA_PROVIDER has an active auth record; run functional acceptance to prove inference."

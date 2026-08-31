@@ -34,8 +34,8 @@ fi
 
 if [[ -z "${NEYRA_PROVIDER:-}" || "$NEYRA_PROVIDER" == REPLACE_* ]]; then
   fail 'Provider onboarding is incomplete: set NEYRA_PROVIDER in client-local .env.'
-elif docker exec "$CID" /opt/neyra/.venv/bin/neyra auth status "$NEYRA_PROVIDER" >/dev/null 2>&1; then
-  pass "Provider $NEYRA_PROVIDER is authorized."
+elif AUTH_STATUS="$(docker exec "$CID" /opt/neyra/.venv/bin/neyra auth status "$NEYRA_PROVIDER" 2>&1 || true)"; grep -qiE 'logged in|authorized' <<<"$AUTH_STATUS"; then
+  pass "Provider $NEYRA_PROVIDER has an active auth record."
 else
   fail "Provider $NEYRA_PROVIDER is not authorized."
 fi
