@@ -1,0 +1,27 @@
+# Never send client state, local credentials or generated artifacts to Docker.
+.git
+.env
+.env.*
+!.env.example
+client-home/
+client-home-template/.env
+memories/
+knowledge/
+sessions/
+logs/
+backups/
+reports/
+plans/
+.cache/
+.neyra/
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+*token*.json
+*credentials*.json

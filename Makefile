@@ -12,7 +12,7 @@ validate-contracts:
 	@$(PYTHON) scripts/validate_contracts.py
 
 validate-deployment:
-	@bash -n scripts/install.sh scripts/doctor.sh scripts/provider-onboarding.sh scripts/acceptance.sh tests/test_deployment.sh
+	@bash -n scripts/install.sh scripts/doctor.sh scripts/provider-onboarding.sh scripts/acceptance.sh scripts/build-image.sh tests/test_deployment.sh
 	@$(PYTHON) scripts/validate_deployment.py
 	@bash tests/test_deployment.sh
 

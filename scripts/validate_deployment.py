@@ -16,8 +16,12 @@ REQUIRED = (
     'docs/provider-onboarding.md',
     'docs/knowledge-onboarding.md',
     'docs/release-acceptance.md',
+    'docs/private-image-release.md',
     'scripts/provider-onboarding.sh',
     'scripts/acceptance.sh',
+    'scripts/build-image.sh',
+    'docker/Dockerfile',
+    'docker/.dockerignore',
 )
 
 
@@ -34,6 +38,8 @@ def main() -> int:
     errors.extend(require_text('scripts/doctor.sh', ('gateway status', 'acceptance.sh', 'COMPOSE_PROJECT_NAME', 'FAIL:', 'PASS:')))
     errors.extend(require_text('scripts/provider-onboarding.sh', ('NEYRA_PROVIDER', 'NEYRA_MODEL', 'auth status', 'login')))
     errors.extend(require_text('scripts/acceptance.sh', ('NEYRA_MODEL_SMOKE_OK', 'auth status', 'Legal runtime package', 'Finance runtime package', 'Knowledge root')))
+    errors.extend(require_text('scripts/build-image.sh', ('immutable digest reference', 'docker build', 'does not push')))
+    errors.extend(require_text('docker/Dockerfile', ('ARG BASE_IMAGE', 'FROM ${BASE_IMAGE}', '/opt/neyra/agent/', '/opt/neyra/neyra_cli/')))
     errors.extend(require_text('docs/deployment.md', ('read-only SSH deploy key', 'never copied back to GitHub')))
     if missing or errors:
         if missing:
