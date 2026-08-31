@@ -1,0 +1,36 @@
+name: neyra-client
+
+services:
+  neyra:
+    image: ${NEYRA_CLIENT_IMAGE:?Set NEYRA_CLIENT_IMAGE in /etc/neyra-client/deploy.env}
+    restart: unless-stopped
+    env_file:
+      - path: ${NEYRA_HOME:?Set NEYRA_HOME in /etc/neyra-client/deploy.env}/.env
+        required: true
+    environment:
+      NEYRA_HOME: /opt/data
+      NEYRA_UID: ${NEYRA_UID:-1000}
+      NEYRA_GID: ${NEYRA_GID:-1000}
+      NEYRA_DISPLAY_LANGUAGE: ${NEYRA_DISPLAY_LANGUAGE:-ru}
+      HF_HOME: /opt/data/.cache/huggingface
+      TZ: ${NEYRA_TIMEZONE:-UTC}
+    volumes:
+      - ${NEYRA_HOME:?Set NEYRA_HOME in /etc/neyra-client/deploy.env}:/opt/data
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: ${NEYRA_PIDS_LIMIT:-512}
+    mem_limit: ${NEYRA_MEM_LIMIT:-4g}
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=512m
+    healthcheck:
+      test: ["CMD", "/opt/neyra/.venv/bin/neyra", "gateway", "status"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
+    networks:
+      - client-net
+
+networks:
+  client-net:
+    driver: bridge
