@@ -1,0 +1,3 @@
+# Imported private source snapshots preserve upstream whitespace verbatim.
+runtime/** -whitespace
+frontend/** -whitespace

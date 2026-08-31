@@ -1,0 +1,290 @@
+@import 'tailwindcss';
+/* Keep DS globals for utility classes/tokens, but do not use its bundled
+   display faces. Neyra overrides every typography token with Google Sans. */
+@import '@nous-research/ui/styles/globals.css';
+
+/* Scan the published design-system bundle so its utility classes survive
+   Tailwind's JIT purge. */
+@source '../node_modules/@nous-research/ui/dist';
+
+/* ------------------------------------------------------------------ */
+/* Google Sans — served locally so every browser uses the same face.   */
+/* Normal and italic variable subsets cover Latin and Cyrillic text.   */
+/* ------------------------------------------------------------------ */
+
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-CyrillicExt.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-Cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-LatinExt.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Google Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-Latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Google Sans';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-Italic-CyrillicExt.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Google Sans';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-Italic-Cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Google Sans';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-Italic-LatinExt.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Google Sans';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts-google-sans/GoogleSans-Italic-Latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ------------------------------------------------------------------ */
+/* Neyra dashboard defaults.                                           */
+/* These tokens match the dark Neyra mode so first paint and React's   */
+/* ThemeProvider use the same palette.                                 */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --foreground: color-mix(in srgb, #ffffff 0%, transparent);
+  --foreground-base: #ffffff;
+  --foreground-alpha: 0;
+  --midground: color-mix(in srgb, #cde9f0 100%, transparent);
+  --midground-base: #cde9f0;
+  --midground-alpha: 1;
+  --background: color-mix(in srgb, #08111e 100%, transparent);
+  --background-base: #08111e;
+  --background-alpha: 1;
+
+  --warm-glow: rgba(77, 208, 225, 0.20);
+  --noise-opacity-mul: 0.32;
+
+  /* Typography tokens — rewritten by ThemeProvider. All roles intentionally
+     use the same family while retaining their existing sizes and weights. */
+  --theme-font-sans: "Google Sans", sans-serif;
+  --theme-font-mono: "Google Sans", sans-serif;
+  --theme-font-display: var(--theme-font-sans);
+  --font-sans: var(--theme-font-sans);
+  --font-mono: var(--theme-font-mono);
+  --font-mondwest: var(--theme-font-sans);
+  --font-rules-compressed: var(--theme-font-sans);
+  --font-rules-expanded: var(--theme-font-sans);
+  --theme-base-size: 15px;
+  --theme-line-height: 1.55;
+  --theme-letter-spacing: 0;
+
+  /* Layout tokens. */
+  --radius: 0.875rem;
+  --theme-radius: 0.875rem;
+  --theme-spacing-mul: 1;
+  --theme-density: comfortable;
+}
+
+/* Theme tokens cascade into the document root so every descendant inherits
+   the font stack, base size, and letter spacing without explicit calls. */
+html {
+  font-family: var(--theme-font-sans);
+  font-size: var(--theme-base-size);
+  line-height: var(--theme-line-height);
+  letter-spacing: var(--theme-letter-spacing);
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--theme-font-sans);
+  min-height: 0;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background-color: var(--background-base);
+  color: var(--midground);
+}
+
+code, kbd, pre, samp, .font-mono, .font-mono-ui {
+  font-family: var(--theme-font-mono);
+}
+
+/* Density: scale the shadcn spacing utilities via a multiplier. The DS
+   components use `p-N` / `gap-N` / `space-*` classes which resolve against
+   Tailwind's spacing scale; multiplying `--spacing` at :root scales them
+   all proportionally in Tailwind v4. */
+@theme inline {
+  --spacing: calc(0.25rem * var(--theme-spacing-mul, 1));
+}
+
+#root {
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+/* The design system ships utility classes such as `font-courier` with a
+   hard-coded Courier New first in their stack. Keep every visible dashboard
+   element on the single family requested for Neyra, including plugin UI. */
+#root,
+#root *,
+#root *::before,
+#root *::after {
+  font-family: "Google Sans", sans-serif !important;
+}
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    min-height: 100dvh;
+    height: auto;
+    max-height: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+/* Keep small/code text readable in the dashboard shell. */
+small { font-size: 1.0625rem; }
+code { font-size: 0.875rem; }
+
+/* Shadcn-compat tokens.
+   The dashboard's page code predates the Nous DS and uses shadcn-style
+   utility classes (bg-card, text-muted-foreground, border-border, etc.)
+   extensively. Rather than rewrite every call site, we expose those
+   tokens on top of the Nous palette so classes continue to resolve. */
+@theme inline {
+  /* Remap foreground to midground so `text-foreground` / `bg-foreground`
+     stay visible — in LENS_0, `--foreground` itself has alpha 0. */
+  --color-foreground: var(--midground);
+
+  --color-card: color-mix(in srgb, var(--midground-base) 4%, var(--background-base));
+  --color-card-foreground: var(--midground);
+  --color-primary: var(--midground);
+  --color-primary-foreground: var(--background-base);
+  --color-secondary: color-mix(in srgb, var(--midground-base) 6%, var(--background-base));
+  --color-secondary-foreground: var(--midground);
+  --color-muted: color-mix(in srgb, var(--midground-base) 8%, var(--background-base));
+  /* Routes the shadcn `muted-foreground` slot through the DS semantic
+     text-secondary token (defaults to midground 80%) so legacy call
+     sites that use `text-muted-foreground` get a readable color
+     instead of the old 55%-transparent default. */
+  --color-muted-foreground: var(--color-text-secondary);
+  --color-accent: color-mix(in srgb, var(--midground-base) 10%, var(--background-base));
+  --color-accent-foreground: var(--midground);
+  --color-destructive: #fb2c36;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #4ade80;
+  --color-warning: #ffbd38;
+  --color-border: color-mix(in srgb, var(--midground-base) 15%, transparent);
+  --color-input: color-mix(in srgb, var(--midground-base) 15%, transparent);
+  --color-ring: var(--midground);
+  --color-popover: color-mix(in srgb, var(--midground-base) 4%, var(--background-base));
+  --color-popover-foreground: var(--midground);
+
+  --radius-sm: calc(var(--theme-radius) - 4px);
+  --radius-md: calc(var(--theme-radius) - 2px);
+  --radius-lg: var(--theme-radius);
+  --radius-xl: calc(var(--theme-radius) + 4px);
+}
+
+
+/* Collapsed sidebar tooltip entrance — skipped when moving between items. */
+@keyframes sidebar-tooltip-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+/* Toast animations used by `components/Toast.tsx`. */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(16px); }
+}
+
+/* Generic fade + dialog entrance used by popovers and confirm dialogs. */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Hide scrollbar utility — used by the header's overflow-x nav row. */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Plus-lighter blend used by logos/titles for a subtle glow. */
+.blend-lighter {
+  mix-blend-mode: plus-lighter;
+}
+
+/* System UI-monospace stack — distinct from `font-courier` (Courier
+   Prime), used for dense data readouts where the display font would
+   break the grid. Routes through the theme's mono stack so themes
+   with a different monospace (JetBrains Mono, IBM Plex Mono, etc.)
+   still apply here. */
+.font-mono-ui {
+  font-family: var(--theme-font-mono);
+}
+
+/* Subtle grain overlay for badges. */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  pointer-events: none;
+  background: repeating-conic-gradient(currentColor 0% 25%, #0000 0% 50%) 0 0 /
+    2px 2px;
+}

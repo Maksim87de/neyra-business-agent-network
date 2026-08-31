@@ -33,11 +33,15 @@ Shared contracts → evidence → handoff → verified result
 
 ## Репозиторий
 
+- `runtime/` — private source snapshot runtime overrides и product CLI с SHA-256 manifest.
+- `frontend/` — private source snapshot dashboard localization без generated distributions.
 - `agents/` — переносимые описания ролей, policies и capability manifests.
 - `shared/schemas/` — JSON Schema для межагентного обмена.
 - `demo/` — только синтетические примеры.
-- `docs/` — архитектура, безопасность и развёртывание.
+- `docs/` — архитектура, безопасность, provenance и publishing gate.
 - `tests/` — contract и integration fixtures.
+
+Статус импортированного кода и условия возможной будущей публикации зафиксированы в [provenance register](docs/provenance.md).
 
 ## Локальная проверка
 
