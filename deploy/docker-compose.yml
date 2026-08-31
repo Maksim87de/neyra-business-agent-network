@@ -9,8 +9,8 @@ services:
         required: true
     environment:
       NEYRA_HOME: /opt/data
-      NEYRA_UID: ${NEYRA_UID:-1000}
-      NEYRA_GID: ${NEYRA_GID:-1000}
+      NEYRA_UID: ${NEYRA_UID:-10000}
+      NEYRA_GID: ${NEYRA_GID:-10000}
       NEYRA_DISPLAY_LANGUAGE: ${NEYRA_DISPLAY_LANGUAGE:-ru}
       HF_HOME: /opt/data/.cache/huggingface
       TZ: ${NEYRA_TIMEZONE:-UTC}
