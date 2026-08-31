@@ -34,9 +34,9 @@ def main() -> int:
     missing = [path for path in REQUIRED if not (ROOT / path).is_file()]
     errors: list[str] = []
     errors.extend(require_text('deploy/docker-compose.yml', ('command: ["gateway", "run"]', 'no-new-privileges:true', 'healthcheck:', 'client-net')))
-    errors.extend(require_text('scripts/install.sh', ('Refusing to overwrite non-empty unmanaged directory', 'mode 0600', 'docker compose', '--skip-pull', 'docker image inspect', 'wait_for_healthy', 'legal finance', 'NEYRA_PROVIDER and NEYRA_MODEL')))
+    errors.extend(require_text('scripts/install.sh', ('Refusing to overwrite non-empty unmanaged directory', 'mode 0600', 'docker compose', '--skip-pull', 'docker image inspect', 'wait_for_healthy', 'legal finance', 'Set CLIENT_ID')))
     errors.extend(require_text('scripts/doctor.sh', ('gateway status', 'acceptance.sh', 'COMPOSE_PROJECT_NAME', 'FAIL:', 'PASS:')))
-    errors.extend(require_text('scripts/provider-onboarding.sh', ('NEYRA_PROVIDER', 'NEYRA_MODEL', 'auth status', 'login')))
+    errors.extend(require_text('scripts/provider-onboarding.sh', ('NEYRA_PROVIDER', 'NEYRA_MODEL', 'auth status', 'auth add')))
     errors.extend(require_text('scripts/acceptance.sh', ('NEYRA_MODEL_SMOKE_OK', 'auth status', 'Legal runtime package', 'Finance runtime package', 'Knowledge root')))
     errors.extend(require_text('scripts/build-image.sh', ('immutable digest reference', 'docker build', 'does not push')))
     errors.extend(require_text('docker/Dockerfile', ('ARG BASE_IMAGE', 'FROM ${BASE_IMAGE}', '/opt/neyra/agent/', '/opt/neyra/neyra_cli/')))
