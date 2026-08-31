@@ -24,7 +24,7 @@ def require_text(path: str, snippets: tuple[str, ...]) -> list[str]:
 def main() -> int:
     missing = [path for path in REQUIRED if not (ROOT / path).is_file()]
     errors: list[str] = []
-    errors.extend(require_text('deploy/docker-compose.yml', ('no-new-privileges:true', 'healthcheck:', 'client-net')))
+    errors.extend(require_text('deploy/docker-compose.yml', ('command: ["gateway", "run"]', 'no-new-privileges:true', 'healthcheck:', 'client-net')))
     errors.extend(require_text('scripts/install.sh', ('Refusing to overwrite non-empty unmanaged directory', 'mode 0600', 'docker compose', '--skip-pull', 'docker image inspect', 'wait_for_healthy')))
     errors.extend(require_text('scripts/doctor.sh', ('gateway status', 'FAIL:', 'PASS:')))
     errors.extend(require_text('docs/deployment.md', ('read-only SSH deploy key', 'never copied back to GitHub')))

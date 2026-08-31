@@ -3,6 +3,7 @@ name: neyra-client
 services:
   neyra:
     image: ${NEYRA_CLIENT_IMAGE:?Set NEYRA_CLIENT_IMAGE in /etc/neyra-client/deploy.env}
+    command: ["gateway", "run"]
     restart: unless-stopped
     env_file:
       - path: ${NEYRA_HOME:?Set NEYRA_HOME in /etc/neyra-client/deploy.env}/.env
