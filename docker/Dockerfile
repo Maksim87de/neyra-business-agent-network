@@ -15,4 +15,4 @@ COPY runtime/client-edition/cli.py /opt/neyra/neyra_cli/client_edition.py
 
 LABEL org.opencontainers.image.title="Neyra Business Agent Network" \
       org.opencontainers.image.source="https://github.com/Maksim87de/neyra-business-agent-network" \
-      org.neyra.distribution="private"
+      org.neyra.distribution="public-test"
