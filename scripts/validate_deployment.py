@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 from pathlib import Path
+from validate_specialist_registry import validate as validate_specialist_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = (
@@ -8,6 +9,10 @@ REQUIRED = (
     'deploy/deploy.env.example',
     'client-home-template/.env.example',
     'client-home-template/README.md',
+    'client-home-template/SOUL.md',
+    'client-home-template/AGENTS.md',
+    'client-home-template/knowledge/specialist-registry.json',
+    'scripts/validate_specialist_registry.py',
     'scripts/install.sh',
     'scripts/doctor.sh',
     'docs/deployment.md',
@@ -32,7 +37,7 @@ def require_text(path: str, snippets: tuple[str, ...]) -> list[str]:
 
 def main() -> int:
     missing = [path for path in REQUIRED if not (ROOT / path).is_file()]
-    errors: list[str] = []
+    errors: list[str] = validate_specialist_registry(ROOT)
     errors.extend(require_text('deploy/docker-compose.yml', ('command: ["gateway", "run"]', 'no-new-privileges:true', 'healthcheck:', 'client-net')))
     errors.extend(require_text('scripts/install.sh', ('Refusing to overwrite non-empty unmanaged directory', 'mode 0600', 'docker compose', '--skip-pull', 'docker image inspect', 'wait_for_healthy', 'legal finance', 'Set CLIENT_ID')))
     errors.extend(require_text('scripts/doctor.sh', ('gateway status', 'acceptance.sh', 'COMPOSE_PROJECT_NAME', 'FAIL:', 'PASS:')))

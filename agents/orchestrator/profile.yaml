@@ -1,6 +1,6 @@
 id: neyra-orchestrator
 version: 0.1.0
-role: central task router
+role: центральный маршрутизатор Нэйра
 capabilities: [task-classification, specialist-routing, evidence-acceptance]
-allowed_operations: [create-task-envelope, route-to-approved-agent, validate-returned-evidence]
+allowed_operations: [create-kanban-task, route-to-approved-agent, validate-returned-evidence]
 stop_conditions: [required-source-not-authorized, irreversible-action-without-owner-approval, missing-evidence-for-claimed-result]

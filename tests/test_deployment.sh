@@ -42,6 +42,15 @@ sed -i 's|ghcr.io/maksim87de/neyra-business-agent-network:v0.1.0-test|registry.e
 [[ -f "$TMP/home/.env" ]]
 [[ "$(stat -c '%a' "$TMP/home/.env")" == 600 ]]
 [[ -f "$TMP/home/config.yaml.example" ]]
+[[ -f "$TMP/home/SOUL.md" ]]
+[[ -f "$TMP/home/AGENTS.md" ]]
+[[ -f "$TMP/home/knowledge/specialist-registry.json" ]]
+python3 - "$TMP/home/knowledge/specialist-registry.json" <<'PYREG'
+import json, sys
+registry = json.load(open(sys.argv[1]))
+assert registry["central_agent"] == {"profile":"default", "display_name":"Нэйра", "telegram_gateway":"central-only"}
+assert registry["specialists"] == [{"profile":"legal", "display_name":"Юрист", "kanban_assignee":"legal"}, {"profile":"finance", "display_name":"Финансист", "kanban_assignee":"finance"}]
+PYREG
 [[ -f "$TMP/home/profiles/legal/SOUL.md" ]]
 [[ -f "$TMP/home/profiles/legal/AGENTS.md" ]]
 [[ -f "$TMP/home/profiles/legal/skills/legal-triage/SKILL.md" ]]

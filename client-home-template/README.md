@@ -1,7 +1,5 @@
-# Persistent client home template
+# Шаблон persistent home клиента
 
-This directory seeds an empty persistent home at `/opt/neyra-client/home`.
+Эта директория инициализирует пустой persistent home в `/opt/neyra-client/home`. В ней нет клиентских знаний, памяти, сессий, логов, OAuth state, Telegram state, model credentials или документов.
 
-It intentionally contains no client identity, prompts, memories, knowledge, sessions, logs, OAuth state, Telegram state, model credentials or documents. The initial Neyra configuration is created only on the target server by the approved release onboarding flow.
-
-`profiles/` is reserved for isolated specialist homes. The legal and finance packages in `agents/` define the portable contracts and policies. Their runtime configuration is installed only after the base runtime release and onboarding are verified.
+При первой установке копируется весь шаблон, включая корневые `SOUL.md`, `AGENTS.md` и `knowledge/specialist-registry.json`. Реестр задаёт ровно два изолированных профиля: `legal` / Юрист и `finance` / Финансист. Их runtime packages устанавливаются из `agents/`; собственные Telegram polling gateway не запускаются. Пользовательские сообщения принимает единый центральный gateway Нэйры, а профильные задачи проходят через встроенный Kanban и возвращаются только с evidence.

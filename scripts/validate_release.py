@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from validate_specialist_registry import validate as validate_specialist_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = (
@@ -18,6 +19,10 @@ REQUIRED = (
     'docs/release-acceptance.md',
     'shared/schemas/handoff.schema.json',
     'shared/schemas/knowledge-ingestion.schema.json',
+    'client-home-template/SOUL.md',
+    'client-home-template/AGENTS.md',
+    'client-home-template/knowledge/specialist-registry.json',
+    'scripts/validate_specialist_registry.py',
     'agents/legal/runtime/SOUL.md',
     'agents/legal/runtime/AGENTS.md',
     'agents/legal/skills/legal-triage/SKILL.md',
@@ -63,7 +68,7 @@ def _validate_local_model_catalog(errors: list[str]) -> None:
 
 
 def main() -> int:
-    errors: list[str] = []
+    errors: list[str] = validate_specialist_registry(ROOT)
     for rel in REQUIRED:
         if not (ROOT / rel).is_file():
             errors.append(f'missing {rel}')

@@ -20,6 +20,7 @@ knowledge/
 !client-home-template/knowledge/
 client-home-template/knowledge/*
 !client-home-template/knowledge/README.md
+!client-home-template/knowledge/specialist-registry.json
 sessions/
 logs/
 backups/

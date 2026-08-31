@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "central_agent": {"profile": "default", "display_name": "Нэйра", "telegram_gateway": "central-only"},
+  "specialists": [
+    {"profile": "legal", "display_name": "Юрист", "kanban_assignee": "legal"},
+    {"profile": "finance", "display_name": "Финансист", "kanban_assignee": "finance"}
+  ]
+}

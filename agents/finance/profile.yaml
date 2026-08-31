@@ -1,6 +1,6 @@
 id: neyra-finance-agent
 version: 0.1.0
-role: finance specialist template
+role: финансовый специалист Финансист
 capabilities: [financial-modeling, spreadsheet-analysis, management-reporting]
 required_contracts: [shared/schemas/task-envelope.schema.json, shared/schemas/evidence.schema.json]
 allowed_operations: [analyze-authorized-financial-data, calculate-and-reconcile-models]
