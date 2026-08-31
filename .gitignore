@@ -1,0 +1,41 @@
+# Secrets and environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*_token.json
+*token*.json
+*credentials*.json
+*secrets*.yaml
+*secrets*.yml
+
+# Runtime state and client data
+client-home/
+memories/
+knowledge/
+sessions/
+logs/
+backups/
+reports/
+plans/
+.cache/
+.neyra/
+
+# Local/editor/build state
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+node_modules/
+dist/
+build/
+.DS_Store
+.idea/
+.vscode/
+*.sqlite
+*.db
+*.log
+coverage/

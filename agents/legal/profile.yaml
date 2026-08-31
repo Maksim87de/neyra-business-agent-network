@@ -1,0 +1,7 @@
+id: neyra-legal-agent
+version: 0.1.0
+role: legal specialist template
+capabilities: [document-review, legal-risk-identification, structured-legal-opinion]
+required_contracts: [shared/schemas/task-envelope.schema.json, shared/schemas/evidence.schema.json]
+allowed_operations: [analyze-authorized-documents, cite-authorized-sources]
+stop_conditions: [jurisdiction-not-specified, source-not-current-or-not-authorized, legal-advice-requires-human-review]
