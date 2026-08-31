@@ -13,6 +13,11 @@ REQUIRED = (
     'docs/deployment.md',
     'docs/operator-runbook.md',
     'docs/client-installation-plan.md',
+    'docs/provider-onboarding.md',
+    'docs/knowledge-onboarding.md',
+    'docs/release-acceptance.md',
+    'scripts/provider-onboarding.sh',
+    'scripts/acceptance.sh',
 )
 
 
@@ -25,8 +30,10 @@ def main() -> int:
     missing = [path for path in REQUIRED if not (ROOT / path).is_file()]
     errors: list[str] = []
     errors.extend(require_text('deploy/docker-compose.yml', ('command: ["gateway", "run"]', 'no-new-privileges:true', 'healthcheck:', 'client-net')))
-    errors.extend(require_text('scripts/install.sh', ('Refusing to overwrite non-empty unmanaged directory', 'mode 0600', 'docker compose', '--skip-pull', 'docker image inspect', 'wait_for_healthy')))
-    errors.extend(require_text('scripts/doctor.sh', ('gateway status', 'FAIL:', 'PASS:')))
+    errors.extend(require_text('scripts/install.sh', ('Refusing to overwrite non-empty unmanaged directory', 'mode 0600', 'docker compose', '--skip-pull', 'docker image inspect', 'wait_for_healthy', 'legal finance', 'NEYRA_PROVIDER and NEYRA_MODEL')))
+    errors.extend(require_text('scripts/doctor.sh', ('gateway status', 'acceptance.sh', 'COMPOSE_PROJECT_NAME', 'FAIL:', 'PASS:')))
+    errors.extend(require_text('scripts/provider-onboarding.sh', ('NEYRA_PROVIDER', 'NEYRA_MODEL', 'auth status', 'login')))
+    errors.extend(require_text('scripts/acceptance.sh', ('NEYRA_MODEL_SMOKE_OK', 'auth status', 'Legal runtime package', 'Finance runtime package', 'Knowledge root')))
     errors.extend(require_text('docs/deployment.md', ('read-only SSH deploy key', 'never copied back to GitHub')))
     if missing or errors:
         if missing:

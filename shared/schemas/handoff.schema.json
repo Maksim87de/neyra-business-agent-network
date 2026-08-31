@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neyra agent handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "from_agent", "to_agent", "allowed_sources", "allowed_operations", "approval_required", "expected_evidence", "stop_conditions"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "from_agent": {"type": "string", "enum": ["orchestrator", "legal", "finance"]},
+    "to_agent": {"type": "string", "enum": ["legal", "finance"]},
+    "allowed_sources": {"type": "array", "items": {"type": "string"}},
+    "allowed_operations": {"type": "array", "items": {"type": "string"}},
+    "approval_required": {"type": "boolean"},
+    "expected_evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "stop_conditions": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}

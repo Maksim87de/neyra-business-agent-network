@@ -32,7 +32,14 @@ if "$ROOT/scripts/install.sh" --prepare-only >/dev/null 2>&1; then
 fi
 [[ -f "$TMP/home/.env" ]]
 [[ "$(stat -c '%a' "$TMP/home/.env")" == 600 ]]
+[[ -f "$TMP/home/profiles/legal/SOUL.md" ]]
+[[ -f "$TMP/home/profiles/legal/AGENTS.md" ]]
+[[ -f "$TMP/home/profiles/legal/skills/legal-triage/SKILL.md" ]]
+[[ -f "$TMP/home/profiles/finance/SOUL.md" ]]
+[[ -f "$TMP/home/profiles/finance/AGENTS.md" ]]
+[[ -f "$TMP/home/profiles/finance/skills/financial-triage/SKILL.md" ]]
+[[ -d "$TMP/home/knowledge" ]]
 sed -i 's|REPLACE_WITH_CLIENT_SLUG|synthetic-client|' "$TMP/home/.env"
 "$ROOT/scripts/install.sh" --prepare-only >/dev/null
 [[ -f "$TMP/home/.neyra-client-managed" ]]
-echo 'PASS: installer checkpoints and protected persistent-home setup are valid.'
+echo 'PASS: installer checkpoints, specialist profiles and protected persistent-home setup are valid.'

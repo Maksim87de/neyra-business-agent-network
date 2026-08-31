@@ -16,6 +16,10 @@
 client-home/
 memories/
 knowledge/
+# The empty template root is documentation only; actual client knowledge remains ignored.
+!client-home-template/knowledge/
+client-home-template/knowledge/*
+!client-home-template/knowledge/README.md
 sessions/
 logs/
 backups/

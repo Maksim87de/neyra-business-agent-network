@@ -22,6 +22,7 @@ source "$DEPLOY_ENV"
 
 export NEYRA_CLIENT_IMAGE NEYRA_UID NEYRA_GID NEYRA_DISPLAY_LANGUAGE
 export NEYRA_TIMEZONE NEYRA_PIDS_LIMIT NEYRA_MEM_LIMIT
+export COMPOSE_PROJECT_NAME="${NEYRA_COMPOSE_PROJECT:-neyra-client}"
 if docker compose -f "$DEPLOY_DIR/docker-compose.yml" config -q; then pass 'Compose configuration is valid.'; else fail 'Compose configuration is invalid.'; fi
 CID="$(docker compose -f "$DEPLOY_DIR/docker-compose.yml" ps -q neyra 2>/dev/null || true)"
 [[ -n "$CID" ]] || { fail 'Neyra container is not running.'; exit 1; }
@@ -30,6 +31,11 @@ STATUS="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{
 if docker exec "$CID" /opt/neyra/.venv/bin/neyra gateway status >/dev/null 2>&1; then pass 'Gateway status command succeeded.'; else fail 'Gateway status command failed.'; fi
 
 if [[ "$MODE" == full ]]; then
-  printf 'WARN: Full acceptance requires an approved synthetic central, legal and finance scenario plus a real Telegram round-trip.\n'
+  if "$ROOT/scripts/acceptance.sh" --functional; then
+    pass 'Internal functional acceptance passed.'
+  else
+    fail 'Internal functional acceptance failed.'
+  fi
+  printf 'WARN: Release admission still requires recorded synthetic specialist, knowledge, restart, rollback, isolation and real Telegram user-path evidence.\n'
 fi
 (( failures == 0 )) || exit 1

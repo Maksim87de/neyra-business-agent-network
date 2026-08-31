@@ -1,0 +1,8 @@
+profile:
+  name: finance
+  autostart: false
+model:
+  inherit_parent_provider: true
+agent:
+  allowed_toolsets: [file]
+  external_writes_require_approval: true

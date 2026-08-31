@@ -1,0 +1,8 @@
+profile:
+  name: legal
+  autostart: false
+model:
+  inherit_parent_provider: true
+agent:
+  allowed_toolsets: [file, search]
+  external_writes_require_approval: true

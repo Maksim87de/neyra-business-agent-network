@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse, json
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
-REQUIRED = ['README.md','AGENTS.md','.gitignore','.env.example','agents/orchestrator/profile.yaml','agents/legal/profile.yaml','agents/finance/profile.yaml','shared/schemas/task-envelope.schema.json','shared/schemas/evidence.schema.json','docs/architecture.md','docs/security-model.md','docs/publishing-gate.md']
+REQUIRED = ['README.md','AGENTS.md','.gitignore','.env.example','agents/orchestrator/profile.yaml','agents/legal/profile.yaml','agents/legal/runtime/SOUL.md','agents/legal/skills/legal-triage/SKILL.md','agents/finance/profile.yaml','agents/finance/runtime/SOUL.md','agents/finance/skills/financial-triage/SKILL.md','shared/schemas/task-envelope.schema.json','shared/schemas/evidence.schema.json','shared/schemas/handoff.schema.json','shared/schemas/knowledge-ingestion.schema.json','docs/architecture.md','docs/security-model.md','docs/publishing-gate.md','docs/provider-onboarding.md','docs/knowledge-onboarding.md','docs/release-acceptance.md','release/release-manifest.schema.json','release/skills-manifest.json']
 FORBIDDEN = {'client-home','memories','knowledge','sessions','logs','backups'}
 def main():
  p=argparse.ArgumentParser(); p.add_argument('--tree',action='store_true'); a=p.parse_args()

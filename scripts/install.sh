@@ -100,9 +100,20 @@ else
   install -d -m 0750 "$HOME_DIR"
   tar -C "$ROOT/client-home-template" -cf - . | tar -C "$HOME_DIR" -xf -
   install -m 0600 "$ROOT/client-home-template/.env.example" "$HOME_DIR/.env"
+
+  # A release always seeds its portable specialist profiles into a new client
+  # home. They receive no sessions, memories, credentials, client documents or
+  # state from another contour; only reviewed profile instructions and skills.
+  for agent in legal finance; do
+    install -d -m 0750 "$HOME_DIR/profiles/$agent"
+    tar -C "$ROOT/agents/$agent/runtime" -cf - . | tar -C "$HOME_DIR/profiles/$agent" -xf -
+    install -d -m 0750 "$HOME_DIR/profiles/$agent/skills"
+    tar -C "$ROOT/agents/$agent/skills" -cf - . | tar -C "$HOME_DIR/profiles/$agent/skills" -xf -
+  done
+  install -d -m 0750 "$HOME_DIR/knowledge"
   touch "$HOME_DIR/.neyra-client-managed"
   chmod 0600 "$HOME_DIR/.env"
-  info "Created persistent home and $HOME_DIR/.env. Set CLIENT_ID before starting."
+  info "Created persistent home with isolated legal and finance runtime packages. Set CLIENT_ID, NEYRA_PROVIDER and NEYRA_MODEL in $HOME_DIR/.env."
 fi
 
 if grep -q '^CLIENT_ID=REPLACE_WITH_CLIENT_SLUG$' "$HOME_DIR/.env"; then
@@ -111,6 +122,7 @@ fi
 
 export NEYRA_HOME="$HOME_DIR"
 export NEYRA_CLIENT_IMAGE
+export COMPOSE_PROJECT_NAME="${NEYRA_COMPOSE_PROJECT:-neyra-client}"
 export NEYRA_UID="${NEYRA_UID:-10000}"
 export NEYRA_GID="${NEYRA_GID:-10000}"
 export NEYRA_DISPLAY_LANGUAGE="${NEYRA_DISPLAY_LANGUAGE:-ru}"

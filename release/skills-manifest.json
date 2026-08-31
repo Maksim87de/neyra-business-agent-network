@@ -1,0 +1,5 @@
+{
+  "status": "release-blocked",
+  "reason": "A release may be created only from a build that exports the exact bundled skills manifest and its SHA-256.",
+  "skills": []
+}

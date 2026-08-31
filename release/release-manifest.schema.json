@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Neyra client release manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["release", "git_commit", "image", "skills", "agents", "acceptance"],
+  "properties": {
+    "release": {"type": "string", "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "git_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference", "digest"],
+      "properties": {
+        "reference": {"type": "string", "minLength": 1},
+        "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "skills": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["manifest", "count", "sha256"],
+      "properties": {
+        "manifest": {"type": "string", "pattern": "^release/skills-manifest\\.json$"},
+        "count": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "agents": {"type": "array", "minItems": 3, "items": {"type": "string", "enum": ["orchestrator", "legal", "finance"]}, "uniqueItems": true},
+    "acceptance": {"type": "array", "minItems": 7, "items": {"type": "string", "enum": ["base-runtime", "provider-auth", "model-smoke", "telegram-round-trip", "knowledge-retrieval", "legal-route", "finance-route", "restart", "rollback", "isolation"]}, "uniqueItems": true}
+  }
+}
