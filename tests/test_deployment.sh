@@ -7,7 +7,19 @@ trap 'rm -rf "$TMP"' EXIT
 mkdir -p "$TMP/bin"
 cat >"$TMP/bin/docker" <<'EOF'
 #!/usr/bin/env bash
-if [[ "$1" == compose ]]; then exit 0; fi
+set -Eeuo pipefail
+if [[ "$1" == compose ]]; then
+  if [[ " $* " == *' ps -q neyra '* ]]; then
+    printf 'synthetic-neyra\n'
+  fi
+  exit 0
+fi
+if [[ "$1" == exec ]]; then
+  if [[ " $* " == *' auth status '* ]]; then
+    printf 'logged in\n'
+  fi
+  exit 0
+fi
 exit 0
 EOF
 chmod +x "$TMP/bin/docker"
@@ -32,6 +44,7 @@ if "$ROOT/scripts/install.sh" --prepare-only >/dev/null 2>&1; then
 fi
 [[ -f "$TMP/home/.env" ]]
 [[ "$(stat -c '%a' "$TMP/home/.env")" == 600 ]]
+[[ -f "$TMP/home/config.yaml.example" ]]
 [[ -f "$TMP/home/profiles/legal/SOUL.md" ]]
 [[ -f "$TMP/home/profiles/legal/AGENTS.md" ]]
 [[ -f "$TMP/home/profiles/legal/skills/legal-triage/SKILL.md" ]]
@@ -40,6 +53,12 @@ fi
 [[ -f "$TMP/home/profiles/finance/skills/financial-triage/SKILL.md" ]]
 [[ -d "$TMP/home/knowledge" ]]
 sed -i 's|REPLACE_WITH_CLIENT_SLUG|synthetic-client|' "$TMP/home/.env"
+sed -i 's|REPLACE_WITH_PROVIDER|openai-codex|' "$TMP/home/.env"
+sed -i 's|REPLACE_WITH_MODEL|gpt-5.6-terra|' "$TMP/home/.env"
+sed -i 's|REPLACE_WITH_NATIVE_ENV_OR_CUSTOM|native|' "$TMP/home/.env"
 "$ROOT/scripts/install.sh" --prepare-only >/dev/null
 [[ -f "$TMP/home/.neyra-client-managed" ]]
+"$ROOT/scripts/provider-onboarding.sh" >/dev/null
+grep -Fx '  provider: openai-codex' "$TMP/home/config.yaml" >/dev/null
+grep -Fx '  default: gpt-5.6-terra' "$TMP/home/config.yaml" >/dev/null
 echo 'PASS: installer checkpoints, specialist profiles and protected persistent-home setup are valid.'

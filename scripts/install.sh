@@ -100,6 +100,7 @@ else
   install -d -m 0750 "$HOME_DIR"
   tar -C "$ROOT/client-home-template" -cf - . | tar -C "$HOME_DIR" -xf -
   install -m 0600 "$ROOT/client-home-template/.env.example" "$HOME_DIR/.env"
+  install -m 0640 "$ROOT/client-home-template/config.yaml.example" "$HOME_DIR/config.yaml.example"
 
   # A release always seeds its portable specialist profiles into a new client
   # home. They receive no sessions, memories, credentials, client documents or
@@ -113,7 +114,7 @@ else
   install -d -m 0750 "$HOME_DIR/knowledge"
   touch "$HOME_DIR/.neyra-client-managed"
   chmod 0600 "$HOME_DIR/.env"
-  info "Created persistent home with isolated legal and finance runtime packages. Set CLIENT_ID, NEYRA_PROVIDER and NEYRA_MODEL in $HOME_DIR/.env."
+  info "Created persistent home with isolated legal and finance runtime packages. Set CLIENT_ID, provider, model and auth mode in $HOME_DIR/.env."
 fi
 
 if grep -q '^CLIENT_ID=REPLACE_WITH_CLIENT_SLUG$' "$HOME_DIR/.env"; then

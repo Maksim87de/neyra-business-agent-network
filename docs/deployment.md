@@ -22,13 +22,14 @@ For an isolated operator staging test only, an already loaded exact image may be
 
 ## Initial onboarding
 
-After the image, runtime configuration and profile package are released, onboarding is performed locally on the target server through the supported Neyra CLI:
+After the image, runtime configuration and profile package are released, the client selects its own provider, model and auth mode in its local `.env`. Provider onboarding is performed locally on the target server:
 
 ```bash
-docker compose -f deploy/docker-compose.yml exec neyra /opt/neyra/.venv/bin/neyra setup
+sudo ./scripts/provider-onboarding.sh
+sudo ./scripts/acceptance.sh --functional
 ```
 
-Secrets created during onboarding remain inside the client persistent home and are never copied back to GitHub.
+Native auth is executed through the provider's own Neyra flow. API keys are written through an approved secret path directly into the client-local `.env`; the onboarding scripts only test their presence and never print values. See [provider onboarding](provider-onboarding.md) for Codex, Claude, Google, Kimi, OpenRouter and custom-provider routes.
 
 ## Health check
 

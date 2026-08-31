@@ -31,6 +31,10 @@ Shared contracts → evidence → handoff → verified result
 
 Подробнее: [архитектура](docs/architecture.md), [модель безопасности](docs/security-model.md), [правила публикации](docs/publishing-gate.md).
 
+## Модель и провайдер принадлежат клиенту
+
+Каждый контур подключает свой provider и model: например Codex, Claude, Google/Gemini, Kimi, OpenRouter или совместимый клиентский gateway. Аккаунт, лимиты и биллинг остаются у клиента; между контурами не переносятся OAuth, ключи и `auth.json`. Подключение проходит отдельный [provider onboarding](docs/provider-onboarding.md) и завершается только реальным model smoke.
+
 ## Репозиторий
 
 - `runtime/` — private source snapshot runtime overrides и product CLI с SHA-256 manifest.

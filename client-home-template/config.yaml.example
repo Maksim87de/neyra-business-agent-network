@@ -1,0 +1,6 @@
+# This file contains only the selected non-secret provider and model.
+# scripts/provider-onboarding.sh creates config.yaml from it after validating
+# the client-local .env. Credentials remain in the local .env or native auth store.
+model:
+  provider: REPLACE_WITH_PROVIDER
+  default: REPLACE_WITH_MODEL

@@ -43,7 +43,7 @@ def main() -> int:
             errors.append(f'{agent} is not a bootable profile package')
     for rel in ('scripts/provider-onboarding.sh', 'scripts/acceptance.sh'):
         text = (ROOT / rel).read_text()
-        for expected in ('NEYRA_PROVIDER', 'NEYRA_MODEL', 'auth status'):
+        for expected in ('NEYRA_PROVIDER', 'NEYRA_MODEL', 'NEYRA_PROVIDER_AUTH_MODE'):
             if expected not in text:
                 errors.append(f'{rel}: missing provider admission control {expected!r}')
     skills = json.loads((ROOT / 'release/skills-manifest.json').read_text())

@@ -34,10 +34,27 @@ fi
 
 if [[ -z "${NEYRA_PROVIDER:-}" || "$NEYRA_PROVIDER" == REPLACE_* ]]; then
   fail 'Provider onboarding is incomplete: set NEYRA_PROVIDER in client-local .env.'
-elif AUTH_STATUS="$(docker exec "$CID" /opt/neyra/.venv/bin/neyra auth status "$NEYRA_PROVIDER" 2>&1 || true)"; grep -qiE 'logged in|authorized' <<<"$AUTH_STATUS"; then
-  pass "Provider $NEYRA_PROVIDER has an active auth record."
 else
-  fail "Provider $NEYRA_PROVIDER is not authorized."
+  case "${NEYRA_PROVIDER_AUTH_MODE:-}" in
+    native)
+      if AUTH_STATUS="$(docker exec "$CID" /opt/neyra/.venv/bin/neyra auth status "$NEYRA_PROVIDER" 2>&1 || true)"; grep -qiE 'logged in|authorized' <<<"$AUTH_STATUS"; then
+        pass "Provider $NEYRA_PROVIDER has an active native auth record."
+      else
+        fail "Provider $NEYRA_PROVIDER is not authorized."
+      fi
+      ;;
+    env)
+      if [[ "${NEYRA_PROVIDER_KEY_ENV:-}" =~ ^[A-Z][A-Z0-9_]*$ ]] && docker exec "$CID" /bin/sh -c 'test -n "$(printenv "$1")"' -- "$NEYRA_PROVIDER_KEY_ENV"; then
+        pass "Client-local API credential variable $NEYRA_PROVIDER_KEY_ENV is present; its value was not read."
+      else
+        fail 'Client-local API credential is not available to the container.'
+      fi
+      ;;
+    custom)
+      pass 'Custom provider configuration will be proved by the direct model smoke.'
+      ;;
+    *) fail 'Provider onboarding is incomplete: set NEYRA_PROVIDER_AUTH_MODE to native, env or custom.' ;;
+  esac
 fi
 
 if [[ -z "${NEYRA_MODEL:-}" || "$NEYRA_MODEL" == REPLACE_* ]]; then

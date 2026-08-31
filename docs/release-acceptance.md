@@ -6,7 +6,7 @@ A release is eligible for a client only after all applicable rows have evidence 
 |---|---|---|
 | Image | registry digest matches release manifest | yes |
 | Base runtime | healthcheck and gateway status | yes |
-| Provider | native auth status succeeds | yes |
+| Provider | native auth record, client-local API-key presence or custom-provider configuration is verified according to auth mode | yes |
 | Model | fixed direct smoke response | yes |
 | Channel | approved user receives an answer | yes when channel is included |
 | Legal | synthetic task → legal profile → evidence | yes when legal is included |
