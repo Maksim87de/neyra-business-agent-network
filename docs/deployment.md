@@ -18,6 +18,8 @@ sudo ./scripts/install.sh
 
 The first execution creates `/etc/neyra-client/deploy.env` with mode `0600` and stops. Set `NEYRA_CLIENT_IMAGE` to the approved immutable release image or digest. The second execution creates `/opt/neyra-client/home/.env`, then stops. Set `CLIENT_ID` there and rerun the installer.
 
+For an isolated operator staging test only, an already loaded exact image may be used with `--skip-pull`. This bypasses registry download, not image admission: record its local immutable image ID in the test evidence. Client handover always uses a released registry digest.
+
 ## Initial onboarding
 
 After the image, runtime configuration and profile package are released, onboarding is performed locally on the target server through the supported Neyra CLI:

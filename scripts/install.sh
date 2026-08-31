@@ -7,15 +7,20 @@ CONFIG_DIR="${NEYRA_CONFIG_DIR:-/etc/neyra-client}"
 HOME_DIR="${NEYRA_HOME_DIR:-/opt/neyra-client/home}"
 DEPLOY_ENV="$CONFIG_DIR/deploy.env"
 START=1
+PULL=1
 
 usage() {
   cat <<'EOF'
-Usage: sudo ./scripts/install.sh [--prepare-only]
+Usage: sudo ./scripts/install.sh [--prepare-only] [--skip-pull]
 
 Run from an approved private deployment checkout. This script creates protected
 host directories and starts only an approved image configured in deploy.env.
 It never downloads source with a personal access token and never writes secrets
 to Git.
+
+--skip-pull is only for an isolated staging host where the exact approved image
+is already present locally. A client release must normally pull its immutable
+image digest from the approved registry.
 EOF
 }
 
@@ -25,6 +30,7 @@ info() { printf 'INFO: %s\n' "$*"; }
 while (($#)); do
   case "$1" in
     --prepare-only) START=0 ;;
+    --skip-pull) PULL=0 ;;
     -h|--help) usage; exit 0 ;;
     *) fail "Unknown option: $1" ;;
   esac
@@ -98,7 +104,12 @@ if (( START == 0 )); then
   exit 0
 fi
 
-docker compose -f "$DEPLOY_DIR/docker-compose.yml" pull
+if (( PULL == 1 )); then
+  docker compose -f "$DEPLOY_DIR/docker-compose.yml" pull
+else
+  docker image inspect "$NEYRA_CLIENT_IMAGE" >/dev/null 2>&1 || fail "--skip-pull requires NEYRA_CLIENT_IMAGE to exist locally."
+  info 'Using a preloaded staging image; registry pull was skipped.'
+fi
 docker compose -f "$DEPLOY_DIR/docker-compose.yml" up -d --remove-orphans
 "$ROOT/scripts/doctor.sh" --quick
 info 'Container started. Complete approved Neyra onboarding on this server before inviting end users.'
