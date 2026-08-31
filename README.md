@@ -1,12 +1,43 @@
-# Нэйра — сеть бизнес-агентов
+# Neyra Business Agent Network
 
-Устанавливаемая агентная бизнес-система: центральный оператор Нэйра маршрутизирует задачи изолированным специалистам и принимает результат только с evidence.
+An installable multi-agent foundation for Russian-speaking business operations.
 
-> **Статус:** публичный тестовый выпуск. Репозиторий содержит только переносимые исходники, демо-данные и контракты. Клиентские контуры, секреты и рабочие данные сюда не входят.
+**Neyra** is the central operator. It receives requests through one client channel, routes scoped work to isolated specialists, checks evidence, and returns one verified response. The first release includes two registered specialist profiles:
 
-## Установка
+| Profile | Role | Output |
+|---|---|---|
+| **Neyra** | Central operator and acceptance layer | scoped task, verified response, approval gate |
+| **Legal** (`legal`) | Authorized document review and legal-risk analysis | structured review with sources, assumptions, risks, and evidence |
+| **Finance** (`finance`) | Financial models, reconciliations, and management reporting | reproducible calculation with source data, assumptions, and evidence |
 
-На чистом Ubuntu/Debian VPS с Docker Engine и Docker Compose v2:
+## Architecture
+
+```text
+Telegram / Web / API
+        |
+        v
+Neyra — central operator
+        |
+        +-- Legal (`legal`)
+        +-- Finance (`finance`)
+        |
+        v
+Shared contracts -> evidence -> handoff -> verified response
+```
+
+The central gateway is the only Telegram polling endpoint. Legal and Finance are isolated runtime profiles, not separate bots: they do not share Telegram credentials, sessions, memories, or client documents.
+
+## What the system enforces
+
+- **Explicit routing.** Specialists receive only a bounded task envelope with approved sources, allowed operations, expected evidence, and stop conditions.
+- **Evidence before completion.** Neyra does not present a specialist task as complete without a structured result and evidence.
+- **Approval gates.** Legal, financial, external, and irreversible actions require owner approval.
+- **Client isolation.** Provider accounts, OAuth state, API keys, documents, sessions, and Telegram credentials remain inside each client deployment.
+- **Russian-first operation.** The installed agent, onboarding instructions, and primary user interaction are localized for Russian-speaking teams.
+
+## Install the test release
+
+Use a clean Ubuntu or Debian VPS with Docker Engine and Docker Compose v2:
 
 ```bash
 git clone https://github.com/Maksim87de/neyra-business-agent-network.git
@@ -14,61 +45,35 @@ cd neyra-business-agent-network
 sudo ./scripts/install.sh --client-id my-company
 ```
 
-Команда скачивает публичный тестовый образ, создаёт отдельный persistent home и запускает gateway. Затем владелец контура подключает собственную модель и провайдера локально — ключи, OAuth, сессии и Telegram token в GitHub не передаются.
+The installer creates a protected persistent home, seeds Neyra plus the Legal and Finance profiles, and starts the central gateway. Provider configuration, OAuth state, model credentials, and Telegram tokens are added locally during onboarding and are never committed to GitHub.
 
-## Состав сети
+> **Release status:** `v0.1.0-test` is a public installation test. Complete provider onboarding and run a real model and Telegram smoke test before inviting end users.
 
-| Компонент | Роль | Результат |
-|---|---|---|
-| Нэйра | Принимает задачу, проверяет границы и выбирает исполнителя | task envelope и проверенный итог |
-| Юрист (`legal`) | Разбирает юридические документы и риски в разрешённой юрисдикции | заключение с источниками, ограничениями и evidence |
-| Финансист (`finance`) | Работает с финансовыми моделями, таблицами и платёжными сценариями | расчёт, файлы и проверяемый вывод |
-| Shared contracts | Определяют форматы task, handoff, decision, risk и evidence | совместимость агентов без передачи лишних данных |
-
-## Архитектура
-
-```text
-Telegram / Web / API
-        │
-        ▼
- Нэйра
-        │
- ┌──────┼──────────────┐
- ▼      ▼              ▼
-Юрист  Финансист
-        │
-        ▼
-Shared contracts → evidence → handoff → verified result
-```
-
-Подробнее: [архитектура](docs/architecture.md), [модель безопасности](docs/security-model.md), [правила публикации](docs/publishing-gate.md).
-
-## Модель и провайдер принадлежат клиенту
-
-Каждый контур подключает свой provider и model: например Codex, Claude, Google/Gemini, Kimi, OpenRouter или совместимый клиентский gateway. Аккаунт, лимиты и биллинг остаются у клиента; между контурами не переносятся OAuth, ключи и `auth.json`. Подключение проходит отдельный [provider onboarding](docs/provider-onboarding.md) и завершается только реальным model smoke.
-
-## Репозиторий
-
-- `runtime/` — private source snapshot runtime overrides и product CLI с SHA-256 manifest.
-- `frontend/` — private source snapshot dashboard localization без generated distributions.
-- `agents/` — переносимые описания ролей, policies и capability manifests.
-- `shared/schemas/` — JSON Schema для межагентного обмена.
-- `demo/` — только синтетические примеры.
-- `docs/` — архитектура, безопасность, provenance и publishing gate.
-- `tests/` — contract и integration fixtures.
-
-Статус импортированного кода и условия возможной будущей публикации зафиксированы в [provenance register](docs/provenance.md).
-
-## Локальная проверка
+## Validate a checkout
 
 ```bash
 make check
-# если GNU Make ещё не установлен:
+# If GNU Make is unavailable:
 python3 scripts/validate_contracts.py
 ```
 
-Команда валидирует JSON-контракты и проверяет, что обязательные файлы присутствуют. Runtime и production deployment будут добавляться отдельными проверяемыми изменениями.
+The checks validate portable repository contracts, the installation flow, the specialist registry, release composition, and the local model catalog.
 
-## Публичный тестовый выпуск
+## Repository layout
 
-Установочный образ: `ghcr.io/maksim87de/neyra-business-agent-network:v0.1.0-test`. Перед клиентским использованием выполните [provider onboarding](docs/provider-onboarding.md) и реальный model smoke.
+- `runtime/` — runtime overrides and product CLI integration.
+- `frontend/` — dashboard localization and UI sources.
+- `agents/` — portable specialist profiles, policies, and capability manifests.
+- `shared/schemas/` — contracts for tasks, handoffs, decisions, risks, and evidence.
+- `client-home-template/` — clean deployment template with Neyra, Legal, and Finance registration.
+- `docs/` — architecture, security model, provider onboarding, and release acceptance.
+- `tests/` — contract and installation fixtures.
+
+## Security boundary
+
+This repository contains portable source code, synthetic examples, and deployment contracts only. It must not contain client secrets, OAuth state, Telegram tokens, real documents, sessions, memories, IP addresses, backups, or production configuration.
+
+## Links
+
+- **Repository:** https://github.com/Maksim87de/neyra-business-agent-network
+- **Test release:** https://github.com/Maksim87de/neyra-business-agent-network/releases/tag/v0.1.0-test
