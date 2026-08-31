@@ -43,6 +43,8 @@ Shared contracts → evidence → handoff → verified result
 
 ```bash
 make check
+# если GNU Make ещё не установлен:
+python3 scripts/validate_contracts.py
 ```
 
 Команда валидирует JSON-контракты и проверяет, что обязательные файлы присутствуют. Runtime и production deployment будут добавляться отдельными проверяемыми изменениями.
