@@ -1,8 +1,8 @@
 PYTHON ?= python3
 SHELL := /usr/bin/env bash
-.PHONY: check validate-contracts validate-deployment validate-release tree
+.PHONY: check validate-contracts validate-deployment validate-release test-release-contract tree
 
-check: validate-contracts validate-deployment validate-release
+check: validate-contracts validate-deployment validate-release test-release-contract
 
 validate-contracts:
 	@$(PYTHON) -m json.tool shared/schemas/task-envelope.schema.json >/dev/null
@@ -18,6 +18,9 @@ validate-deployment:
 
 validate-release:
 	@$(PYTHON) scripts/validate_release.py
+
+test-release-contract:
+	@$(PYTHON) -m unittest -v tests/test_release_contract.py
 
 tree:
 	@$(PYTHON) scripts/validate_contracts.py --tree

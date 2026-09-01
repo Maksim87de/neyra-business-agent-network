@@ -47,7 +47,7 @@ sudo ./scripts/install.sh --client-id my-company
 
 The installer creates a protected persistent home, seeds Neyra plus the Legal and Finance profiles, and starts the central gateway. Provider configuration, OAuth state, model credentials, and Telegram tokens are added locally during onboarding and are never committed to GitHub.
 
-> **Release status:** `v0.1.0-test` is a public installation test. Complete provider onboarding and run a real model and Telegram smoke test before inviting end users.
+> **Release status:** `v0.1.0` is a public installation release. Complete provider onboarding and run a real model and Telegram smoke test before inviting end users.
 
 ## Validate a checkout
 
@@ -76,4 +76,4 @@ This repository contains portable source code, synthetic examples, and deploymen
 ## Links
 
 - **Repository:** https://github.com/Maksim87de/neyra-business-agent-network
-- **Test release:** https://github.com/Maksim87de/neyra-business-agent-network/releases/tag/v0.1.0-test
+- **Release:** https://github.com/Maksim87de/neyra-business-agent-network/releases/tag/v0.1.0

@@ -37,7 +37,7 @@
    sudo ./scripts/acceptance.sh --functional
    ```
 
-4. Скрипт проверяет только наличие client-local auth/key, записывает не секретные `model.provider` и `model.default` в `<client-home>/config.yaml`, перезапускает **только** контейнер этого контура и требует фиксированный inference response.
+4. Скрипт проверяет только наличие client-local auth/key, записывает не секретные `model.provider` и `model.default` в `<client-home>/config.yaml`, перезапускает **только** контейнер этого контура и требует фиксированный inference response. После onboarding источником текущей модели является `config.yaml`: если модель меняют через интерфейс или команду Нэйры, functional acceptance читает и проверяет именно runtime-конфигурацию, а не устаревшее значение из `.env`.
 5. Лишь после model smoke подключается Telegram или другой пользовательский канал и проходит channel round-trip.
 
 ## Пример локального `.env` — Kimi
@@ -58,4 +58,4 @@ KIMI_API_KEY=[stored-through-approved-secret-path]
 - `auth status` с `logged out` — блокировка, даже если команда завершилась с кодом `0`.
 - Наличие переменной API key доказывает лишь доставку секрета в контейнер, но не доступ к модели.
 - Успешный model smoke — единственное доказательство inference readiness.
-- Смена provider/model после handover — это клиентское изменение: повторяются provider onboarding, model smoke и channel round-trip.
+- Смена provider/model после handover — это клиентское изменение: обновляется `config.yaml`, затем повторяются model smoke и channel round-trip. При смене способа авторизации или секрета повторяется provider onboarding.
