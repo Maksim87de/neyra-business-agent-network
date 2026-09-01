@@ -27,20 +27,41 @@ STATUS="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{
 [[ "$STATUS" == healthy ]] && pass 'Container healthcheck is healthy.' || fail "Container state is $STATUS."
 docker exec "$CID" /opt/neyra/.venv/bin/neyra gateway status >/dev/null 2>&1 && pass 'Gateway status succeeded.' || fail 'Gateway status failed.'
 
+RUNTIME_CONFIG="$(docker exec "$CID" /opt/neyra/.venv/bin/python -c '
+from neyra_cli.config import load_config_readonly
+cfg = load_config_readonly()
+model = cfg.get("model") or {}
+if not isinstance(model, dict):
+    raise SystemExit(1)
+provider = model.get("provider") or ""
+default = model.get("default") or model.get("model") or ""
+if not provider or not default:
+    raise SystemExit(1)
+print(f"{provider}\t{default}")
+' 2>/dev/null || true)"
+if [[ "$RUNTIME_CONFIG" == *$'\t'* ]]; then
+  RUNTIME_PROVIDER="${RUNTIME_CONFIG%%$'\t'*}"
+  RUNTIME_MODEL="${RUNTIME_CONFIG#*$'\t'}"
+  pass "Runtime config has provider $RUNTIME_PROVIDER and model $RUNTIME_MODEL."
+else
+  fail 'Runtime config has no selected provider and model. Run provider-onboarding.sh before functional acceptance.'
+  RUNTIME_PROVIDER=""
+fi
+
 if [[ "$MODE" == --base ]]; then
   (( failures == 0 )) || exit 1
   exit 0
 fi
 
-if [[ -z "${NEYRA_PROVIDER:-}" || "$NEYRA_PROVIDER" == REPLACE_* ]]; then
-  fail 'Provider onboarding is incomplete: set NEYRA_PROVIDER in client-local .env.'
+if [[ -z "$RUNTIME_PROVIDER" ]]; then
+  fail 'Provider onboarding is incomplete: configure the runtime model before functional acceptance.'
 else
   case "${NEYRA_PROVIDER_AUTH_MODE:-}" in
     native)
-      if AUTH_STATUS="$(docker exec "$CID" /opt/neyra/.venv/bin/neyra auth status "$NEYRA_PROVIDER" 2>&1 || true)"; grep -qiE 'logged in|authorized' <<<"$AUTH_STATUS"; then
-        pass "Provider $NEYRA_PROVIDER has an active native auth record."
+      if AUTH_STATUS="$(docker exec "$CID" /opt/neyra/.venv/bin/neyra auth status "$RUNTIME_PROVIDER" 2>&1 || true)"; grep -qiE 'logged in|authorized' <<<"$AUTH_STATUS"; then
+        pass "Provider $RUNTIME_PROVIDER has an active native auth record."
       else
-        fail "Provider $NEYRA_PROVIDER is not authorized."
+        fail "Provider $RUNTIME_PROVIDER is not authorized."
       fi
       ;;
     env)
@@ -57,10 +78,8 @@ else
   esac
 fi
 
-if [[ -z "${NEYRA_MODEL:-}" || "$NEYRA_MODEL" == REPLACE_* ]]; then
-  fail 'Model onboarding is incomplete: set NEYRA_MODEL in client-local .env.'
-elif [[ -n "${NEYRA_PROVIDER:-}" && "$NEYRA_PROVIDER" != REPLACE_* ]]; then
-  output="$(timeout 120 docker exec "$CID" /opt/neyra/.venv/bin/neyra -z 'Reply with exactly: NEYRA_MODEL_SMOKE_OK' --provider "$NEYRA_PROVIDER" -m "$NEYRA_MODEL" 2>&1 || true)"
+if [[ -n "$RUNTIME_PROVIDER" ]]; then
+  output="$(timeout 120 docker exec "$CID" /opt/neyra/.venv/bin/neyra -z 'Reply with exactly: NEYRA_MODEL_SMOKE_OK' 2>&1 || true)"
   grep -qx 'NEYRA_MODEL_SMOKE_OK' <<<"$output" && pass 'Direct model smoke returned the expected response.' || fail 'Direct model smoke did not return the expected response.'
 fi
 

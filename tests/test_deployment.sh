@@ -37,7 +37,8 @@ if [[ ! -f "$TMP/etc/deploy.env" ]]; then
   exit 1
 fi
 [[ "$(stat -c '%a' "$TMP/etc/deploy.env")" == 600 ]]
-sed -i 's|ghcr.io/maksim87de/neyra-business-agent-network:v0.1.0-test|registry.example/neyra@sha256:test|' "$TMP/etc/deploy.env"
+sed -i 's|ghcr.io/maksim87de/neyra-business-agent-network:v0.1.0|registry.example/neyra@sha256:test|' "$TMP/etc/deploy.env"
+sed -i "s|^NEYRA_UID=.*|NEYRA_UID=$(id -u)|; s|^NEYRA_GID=.*|NEYRA_GID=$(id -g)|" "$TMP/etc/deploy.env"
 "$ROOT/scripts/install.sh" --prepare-only --client-id synthetic-client >/dev/null
 [[ -f "$TMP/home/.env" ]]
 [[ "$(stat -c '%a' "$TMP/home/.env")" == 600 ]]
